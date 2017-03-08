@@ -1,6 +1,7 @@
 Um eine Webserverumgebung aufzusetzen wird in diesem Projekt Node.js benutzt. In den folgenden Schritten wird dieses vorgehen Dokumentiert. 
 Es wird allerdings vorausgesetz, dass Raspbian schon auf der neusten Version läuft.
 
+/* Node-js installieren */
 $ sudo apt install nodejs
 
 $ node -v
