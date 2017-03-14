@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js">
+</script>
+</head>
+
+<body>
+<script>
+	$('#mybutton').click(function(){
+	 $.post('/test');
+});
+</script>
+<div>
+<img src="http://192.168.0.90/mjpg/video.mjpg">
+</div>
+<button id = "mybutton"> Press up<button id = "mybutton"> Press up </button>
+ </button> 
+
+
+
+</body>
+</html>

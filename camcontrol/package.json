@@ -13,7 +13,7 @@
   "keywords": [
     "webcam"
   ],
-  "author": "Fabio Göldi, Cedric Sutter",
+  "author": "Fabio GÃ¶ldi, Cedric Sutter",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/flaviotobler/NTB_Iuk_II_P_2017_WebTrain/issues"
@@ -21,6 +21,7 @@
   "dependencies": {
     "express": "^4.15.2",
     "http": "0.0.0",
+    "mjpeg-proxy": "^0.2.0",
     "request": "^2.80.0"
   }
 }
