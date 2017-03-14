@@ -1,0 +1,26 @@
+{
+  "name": "camcontrol",
+  "version": "0.0.0",
+  "description": "This is our very beautiful project!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flaviotobler/NTB_Iuk_II_P_2017_WebTrain"
+  },
+  "keywords": [
+    "webcam"
+  ],
+  "author": "Fabio Göldi, Cedric Sutter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flaviotobler/NTB_Iuk_II_P_2017_WebTrain/issues"
+  },
+  "dependencies": {
+    "express": "^4.15.2",
+    "http": "0.0.0",
+    "request": "^2.80.0"
+  }
+}
