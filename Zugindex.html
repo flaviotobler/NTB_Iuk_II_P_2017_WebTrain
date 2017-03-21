@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+</head>
+
+<body>
+
+<!--HTML Teil der Website
+  Buttons um den Zug zu starten oder zu stoppen -->
+<div class="buttons button-area">
+<button id = "button-start"> Start </button>
+<button id = "button-stop"> Stop </button>
+</div>
+
+<!--Javascript Teil ausführen der Button Methoden -->
+<script>
+
+/*Button start funktion*/
+$(document).ready(function(){
+
+  /*Button start funktion*/
+       $('#button-start').click(function(){
+         $.post('/start');
+       });
+
+/*Button start funktion*/
+        $('#button-stop').click(function(){
+         $.post('/stop');
+       });
+
+});
+
+</script>
+</body>
+</html>
