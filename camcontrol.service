@@ -1,0 +1,16 @@
+[Unit]
+Description=Camcontrol for Webtrain with node.js
+
+[Service]
+ExecStart=/usr/bin/node /home/pi/node_projects/camcontrol/index.js
+Restart=always
+User=pi
+Group=pi
+StandardOutput=syslog               # Output to syslog
+StandardError=syslog                # Output to syslog
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/home/pi/node_projects/camcontrol/
+
+[Install]
+WantedBy=multi-user.target
