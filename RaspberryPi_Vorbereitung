@@ -2,34 +2,34 @@ Um eine Webserverumgebung aufzusetzen wird in diesem Projekt Node.js benutzt. In
 Es wird allerdings vorausgesetz, dass Raspbian schon auf der neusten Version läuft.
 
 // Rapberry-Pi konfigurieren
-$sudo raspi-config 
+sudo raspi-config 
 /*  "9 Advanced Options"
     "A6 SPI"
     "Would you like the SPI interfadce to be enabled?" "<Yes>"
 */
 
 //C-Librarys herunterladen und installieren
+sudo apt-get update
 sudo apt-get install automake libtool git
 git clone https://github.com/thomasmacpherson/piface.git
 cd piface/c
 ./autogen.sh && ./configure && make && sudo make install
 sudo ldconfig
-cd ../scripts
-sudo ./spidev-setup
 
 // Node-js installieren 
-$ sudo apt install nodejs
+curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 // Node-js installation testen 
-$ node -v
+node -v
 v7.6.0
-$ node
+node
 > 1 + 3
 4
 
 // Projektordner anlegen 
-$ mkdir webtrain
-$ cd webtrain
+mkdir webtrain
+cd webtrain
 
 // Piface Packet installieren 
 npm install piface
