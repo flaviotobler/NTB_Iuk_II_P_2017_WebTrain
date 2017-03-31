@@ -1,51 +1,63 @@
-//benötigte Module laden
+//lode required modules
 var express = require('express');
 var app = express();
 var request = require('request');
 var pfio = require("piface");
 var state = 0;
 
-//GPIO initialisieren
+//initialize GPIO
 pfio.init();
 
 /*
-Wird der Button start gedrückt auf der Homepage sendet dieser ein /start, mit einem wert in diesem Fall eine 0,1 (0->port, 1-> status).
+If the start button is pressed on the homepage, the homepage will send a /start message, then the relay on the piface is switched on.
 */
 app.post('/start', function (req, res)
 		{
-			console.log("Button Start pressed"); //Debug-Meldung ausgeben
-			pfio.digital_write(0, 1); //Zug starten
-			state=1; //Zustand abspeichern (benoetigt bei der Abfrage)
-			res.status(200).send(""+state); //Server-Request beantworten
+			console.log("Button Start pressed"); //Output a debug message
+			pfio.digital_write(0, 1); //start the train
+			state=1; //Save state (required when checking status)
+			res.status(200).send(""+state); //Answer the server request
 		}
 	);
 
 /*
-Wird der Button stop gedrückt auf der Homepage geschehen dieselben Schritte wie beim Drücken auf Button start
-In diesem ändert die Variable state auf 0 und der Port wird auf low gesetzt
+If the stop button is pressed on the homepage, the homepage will send a /stop message, then the relay on the piface is switched of.
 */
 
-app.post('/stop', function (req, res) {
- 	console.log("Button Stop pressed");
-	pfio.digital_write(0, 0);
-	state=0;
-	res.status(200).send(""+state);
-});
+app.post('/stop', function (req, res)
+		{
+ 			console.log("Button Stop pressed"); //Output a debug message
+			pfio.digital_write(0, 0); //stop the train
+			state=0; //Save state (required when checking status)
+			res.status(200).send(""+state); //Answer the server request
+		}
+);
 
-//Wird der Server gestartet mittel node Zugindex wird die HTML Seite Zugindex.html aufgerufen
+/*
+When the server gets started via nodejs the HTML site Zugindex.html gets called.
+*/
 
- app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/Zugindex.html');
-});
+ app.get('/', function (req, res) 
+	 	{
+  			res.sendFile(__dirname + '/Zugindex.html'); 
+		}
+);
 
-//Die Seite ist auf dem Port 3000 aufzurufen und zeigt dies auf dem Terminal
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
-});
+/*
+Port 3000 is defined for the server call
+*/
+app.listen(3000, function () 
+	   	{
+  			console.log('Example app listening on port 3000!'); //Output a debug message
+		}
+);
 
-app.post('/getState', function (req, res) {
- 	console.log("Button getState pressed: " + state);
-	
-	res.status(200).send(""+state);
-
-});
+/*
+Is the getState button pressed on the homepage, the homepage will send a /getState message, then the server returns the current status of the train.
+*/
+app.post('/getState', function (req, res) 
+	 	{
+ 			console.log("Button getState pressed: " + state); //Output a debug message
+			res.status(200).send(""+state); //return a Success status message and the status of the train.
+		}
+);
