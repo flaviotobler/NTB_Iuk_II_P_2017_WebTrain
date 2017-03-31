@@ -15,25 +15,21 @@
 	</div>
 	<script>
 	// AJAX-function-calls for the buttons 
-	$(document).ready(
-		function()
+	$(document).ready(function()
 		{
-			$('#button-start').click(
-				function()
+			$('#button-start').click(function()
 				{
 					$.post('/start',responseReceived);
 				}
 			);
 
-			$('#button-stop').click(
-				function()
+			$('#button-stop').click(function()
 				{
 					$.post('/stop',responseReceived);
 				}
 			);
 
-			$('#button-getState').click(
-				function()
+			$('#button-getState').click(function()
 				{
 					$.post('/getState',responseReceived);
 				}
