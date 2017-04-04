@@ -14,56 +14,56 @@
 		<button id = "button-getState"> getState </button>
 	</div>
 	<script>
-	// AJAX-function-calls for the buttons 
-	$(document).ready(function()
-		{
-			$('#button-start').click(function()
-				{
-					$.post('/start',responseReceived);
-				}
-			);
-
-			$('#button-stop').click(function()
-				{
-					$.post('/stop',responseReceived);
-				}
-			);
-
-			$('#button-getState').click(function()
-				{
-					$.post('/getState',responseReceived);
-				}
-			);
-		}
-	);
-	// AJAX Callback-functions 
-	function responseReceived(data, status)
-	{
-		if("success" == status)		//Check the server-connection
-		{
-			switch (data)	//Check the received data
+		// AJAX-function-calls for the buttons 
+		$(document).ready(function()
 			{
-				case "0":
+				$('#button-start').click(function()
+					{
+						$.post('/start',responseReceived);
+					}
+				);
+
+				$('#button-stop').click(function()
+					{
+						$.post('/stop',responseReceived);
+					}
+				);
+
+				$('#button-getState').click(function()
+					{
+						$.post('/getState',responseReceived);
+					}
+				);
+			}
+		);
+		// AJAX Callback-functions 
+		function responseReceived(data, status)
+		{
+			if("success" == status)		//Check the server-connection
+			{
+				switch (data)	//Check the received data
 				{
-					alert("Zug steht.");		//Return the status in a alert-message
-					break;
-				}
-				case "1":
-				{
-					alert("Zug faehrt.");		//Return the status in a alert-message	
-					break;
-				}
-				default:
-				{
-					alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+					case "0":
+					{
+						alert("Zug steht.");		//Return the status in a alert-message
+						break;
+					}
+					case "1":
+					{
+						alert("Zug faehrt.");		//Return the status in a alert-message	
+						break;
+					}
+					default:
+					{
+						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+					}
 				}
 			}
+			else
+			{
+				alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+			}
 		}
-		else
-		{
-			alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
-		}
-	}
 
 	</script>
 </body>
