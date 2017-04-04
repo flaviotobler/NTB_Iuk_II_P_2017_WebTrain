@@ -29,38 +29,43 @@ app.post('/links', function (req, res)
 Wird der Button stop gedrückt auf der Homepage geschehen dieselben Schritte wie beim Drücken auf Button start
 In diesem ändert die Variable state auf 0 und der Port wird auf low gesetzt
 */
-
-app.post('/rechts', function (req, res) {
- 	console.log("Button rechts pressed");
-	pfio.digital_write(1, 1); //Zug starten
-	setTimeout(rechtsaus, 1000); 
-	state=1;
-	res.status(200).send(""+state);
-});
+app.post('/rechts', function (req, res) 
+	 	{
+ 			console.log("Button rechts pressed");
+			pfio.digital_write(1, 1); //Zug starten
+			setTimeout(rechtsaus, 1000); 
+			state=1;
+			res.status(200).send(""+state);
+		}
+	);
 
 //Wird der Server gestartet mittel node Weiche wird die HTML Seite Weiche.html aufgerufen
 
- app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/weiche.html');
-});
+ app.get('/', function (req, res) 
+	 	{
+  			res.sendFile(__dirname + '/weiche.html');
+		}
+	);
 
 //Die Seite ist auf dem Port 3000 aufzurufen und zeigt dies auf dem Terminal
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
-});
+app.listen(3000, function () 
+	   	{
+  		console.log('Example app listening on port 3000!');
+		}
+	  );
 
-app.post('/getState', function (req, res) {
- 	console.log("Button getState pressed: " + state);
-	
-	res.status(200).send(""+state);
+app.post('/getState', function (req, res) 
+	 	{
+ 			console.log("Button getState pressed: " + state);
+			res.status(200).send(""+state);
+		}
+	);
 
-});
-
-function rechtsaus(){
-pfio.digital_write(1, 0);
-
+function rechtsaus()
+{
+	pfio.digital_write(1, 0);
 }
-function linksaus(){
-pfio.digital_write(0, 0);
-
+function linksaus()
+{
+	pfio.digital_write(0, 0);
 }
