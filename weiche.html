@@ -7,6 +7,7 @@
 </head>
 
 <body>
+	<!-- Buttons to controll the Switch -->
 	<div class="buttons button-area">
 		<button id = "button-links"> Links </button>
 		<button id = "button-rechts"> Rechts </button>
@@ -14,52 +15,54 @@
 	</div>
 
 	<script>
-	$(document).ready(function()
-		{
-			$('#button-links').click(function()
-				{
-		 			$.post('/links',responseReceived);
-				}
-			);
-			$('#button-rechts').click(function()
-				{
-		 			$.post('/rechts',responseReceived);
-				}
-			);
-			$('#button-getState').click(function()
-				{
-		 			$.post('/getState',responseReceived);
-				}
-			);
-		}
-	);
-	function responseReceived(data, status)
-	{
-		if("success" == status)
-		{
-			switch (data)
+		// AJAX-function-calls for the buttons 
+		$(document).ready(function()
 			{
-				case "0":
+				$('#button-links').click(function()
+					{
+						$.post('/links',responseReceived);
+					}
+				);
+				$('#button-rechts').click(function()
+					{
+						$.post('/rechts',responseReceived);
+					}
+				);
+				$('#button-getState').click(function()
+					{
+						$.post('/getState',responseReceived);
+					}
+				);
+			}
+		);
+		// AJAX Callback-functions 
+		function responseReceived(data, status)
+		{
+			if("success" == status)		//Check the server-connection
+			{
+				switch (data)
 				{
-					alert("Weiche links.");
-					break;
-				}
-				case "1":
-				{
-					alert("Weiche rechts.");
-					break;
-				}
-				default:
-				{
-					alert("Die Daten sind korrupt!!!");
+					case "0":
+					{
+						alert("Weiche links.");		//Return the status in a alert-message
+						break;
+					}
+					case "1":
+					{
+						alert("Weiche rechts.");	//Return the status in a alert-message
+						break;
+					}
+					default:
+					{
+						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+					}
 				}
 			}
+			else
+			{
+				alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+			}
 		}
-		else
-		{
-			alert("Kommunikation zum Server scheisse!!!");
-		}
-	}
 	</script>
 </body>
 </html>
