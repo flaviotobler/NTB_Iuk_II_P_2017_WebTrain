@@ -19,7 +19,7 @@ app.post('/links', function (req, res)
 		{
 			console.log("Button Links pressed"); //Debug-Meldung ausgeben
 			pfio.digital_write(0, 1); //Zug starten
-			setTimeout(pfio.digital_write(0, 0), 1000); 
+			setTimeout(linksaus, 1000); 
 			state=0; //Zustand abspeichern (benoetigt bei der Abfrage)
 			res.status(200).send(""+state); //Server-Request beantworten
 		}
@@ -33,15 +33,15 @@ In diesem ändert die Variable state auf 0 und der Port wird auf low gesetzt
 app.post('/rechts', function (req, res) {
  	console.log("Button rechts pressed");
 	pfio.digital_write(1, 1); //Zug starten
-	setTimeout(pfio.digital_write(1, 0), 1000); 
+	setTimeout(rechtsaus, 1000); 
 	state=1;
 	res.status(200).send(""+state);
 });
 
-//Wird der Server gestartet mittel node Zugindex wird die HTML Seite Zugindex.html aufgerufen
+//Wird der Server gestartet mittel node Weiche wird die HTML Seite Weiche.html aufgerufen
 
  app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/Weiche.html');
+  res.sendFile(__dirname + '/weiche.html');
 });
 
 //Die Seite ist auf dem Port 3000 aufzurufen und zeigt dies auf dem Terminal
@@ -56,7 +56,11 @@ app.post('/getState', function (req, res) {
 
 });
 
+function rechtsaus(){
+pfio.digital_write(1, 0);
 
+}
+function linksaus(){
+pfio.digital_write(0, 0);
 
-
-
+}
