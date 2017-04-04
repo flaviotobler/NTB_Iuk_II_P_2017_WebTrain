@@ -1,3 +1,10 @@
+#Das service-skript kann auf dem pi als service hinzugefügt werden, so wird der node.js server automatisch mit dem pi gestartet
+#Befehle um den node.js service zu bedienen sind: 
+# sudo systemctl restart camcontrol , anstatt restart sind auch commands wie start, stop und status möglich
+
+#.service Datei ist abzulegen unter: /etc/systemd/system
+# service aktivieren mit -> sudo systemctl enable camcontrol.service
+
 [Unit]
 Description=Camcontrol for Webtrain with node.js
 
