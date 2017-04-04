@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+</head>
+
+<body>
+<div class="buttons button-area">
+<button id = "button-links"> Links </button>
+<button id = "button-rechts"> Rechts </button>
+<button id = "button-getState"> getState </button>
+
+</div>
+
+<script>
+$(document).ready(function(){
+       	$('#button-links').click(function(){
+         $.post('/links',responseReceived);
+       	});
+        $('#button-rechts').click(function(){
+         $.post('/rechts',responseReceived);
+       	});
+	
+	$('#button-getState').click(function(){
+         $.post('/getState',responseReceived);
+       	});
+});
+function responseReceived(data, status)
+{
+	if("success" == status)
+	{
+		switch (data)
+		{
+			case "0":
+			{
+				alert("Weiche links.");
+				break;
+			}
+			case "1":
+			{
+				alert("Weiche rechts.");
+				break;
+			}
+			default:
+			{
+				alert("Die Daten sind korrupt!!!");
+			}
+		}
+	}
+	else
+	{
+		alert("Kommunikation zum Server scheisse!!!");
+	}
+}
+</script>
+
+
+</body>
+</html>
