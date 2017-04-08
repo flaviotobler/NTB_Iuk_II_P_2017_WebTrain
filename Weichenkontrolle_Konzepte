@@ -1,0 +1,50 @@
+In diesem File finden Sie 3 mögliche Konzepte zur Überwachung der Weiche. 
+Bedingung ist, dass die Weiche nicht geschalten werden darf während dem der Zug darauf steht.  
+
+Konzept 1:
+
+Die Weiche wird "altmodisch" über die Schaltgleise versorgt. Somit muss die Schaltung der Relais länger andauern um sicher zu gehen,
+das der Zug auch über das Schaltgleis gefahren ist. 
+
+-Contra: 
+  - Lange schaltzeit der Relais
+  - "Lotterie" ob der Zug auch über das Schaltgleis gefahren ist oder nicht
+  - Keine erweiterungsmöglichkeiten möglich, bspw. direktes ansteuern der Kamera
+
+-Pro:
+  - Einfache Implementierung, d.h. Schaltzeit erhöhen, Schaltgleis einbauen
+  - kein weiterer Code nötig 
+  
+Konzept 2:
+
+Die Weiche wird abhängig vom Input auf dem PiFace gesteuert. D.h. kommt ein high auf den Input an, wird über ein Javascript die 
+Weichenfunktion geschalten. 
+
+-Contra:
+  -Weiterer Code wird benötigt
+  -Mehr verdrahtung
+  -
+  
+-Pro:
+  - Schaltgleis kann auch für zukünftige Erweiterungen benötigt werden
+  - 100% Sicherheit, dass die Weiche nicht geschalten wird vor das der Zug darüber fährt
+  - Relativ einfache Implementierung, d.h. Schaltgleis Javascript in Weichen Javascript einbauen
+  - Weitere Schaltgleise können einfach eingebaut werden und so auch Kontrolliert werden
+  
+Konzept 3:
+
+Mittels Signalstellung vor der Weiche zuerst das Signal auf rot stellen, anschliessend einige Zeit warten (30-60 sekunden jenach 
+Geschwindigkeit des Zuges). Nach der Abgelaufenen Zeit die Weiche schalten und das Signal auf grün setzen somit kann der Zug weiterfahren. 
+
+-Contra:
+  - Lange wartezeiten
+  - Extra Code implementieren
+  - keine 100% Sicherheit das der Zug am Signal steht
+  
+  -Pro:
+   - Einfache Steuerung des Signals
+   - Signalsteuerung kann auch für eventuelle zukünftige Erweiterungen benutzt werden
+  
+  
+  
+  
