@@ -13,7 +13,7 @@ das der Zug auch über das Schaltgleis gefahren ist.
   - "Lotterie" ob die Schaltzeit der Relais auch immer lange genug ist
   - Geschwindigkeitsabhängig, d.h. auch die Schaltung der Relais
   - Keine Erweiterungsmöglichkeiten möglich, bspw. direktes ansteuern der Kamera
-  - 100% Sicherheit das die Weiche nicht geschalten wird solange der Zug nicht über das Schaltgleis fährt
+  - keine 100% Sicherheit, dass die Weiche wenn der Zug nicht über das Schaltgleis fährt
 
 -Pro:
   - Einfache Implementierung, d.h. Schaltzeit erhöhen, Schaltgleis einbauen
