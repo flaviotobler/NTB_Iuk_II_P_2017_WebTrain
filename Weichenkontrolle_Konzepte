@@ -3,48 +3,66 @@ Bedingung ist, dass die Weiche nicht geschalten werden darf während dem der Zug
 
 Konzept 1:
 
-Die Weiche wird "altmodisch" über die Schaltgleise versorgt. Somit muss die Schaltung der Relais länger andauern um sicher zu gehen,
+Die Weiche wird "altmodisch" über die Schaltgleise geschalten, das heisst das Relais wird geschalten und über das Schaltgleis auf ground
+geführt. Wird die Weiche über diese Methode geschalten kann sicher gegangen werden, dass diese nicht geschalten wird während dem der Zug 
+auf der Weiche steht. Auswirkung hat dies aber auf die Schaltung der Relais, welche länger andauern muss um sicher zu gehen,
 das der Zug auch über das Schaltgleis gefahren ist. 
 
 -Contra: 
   - Lange schaltzeit der Relais
-  - "Lotterie" ob der Zug auch über das Schaltgleis gefahren ist oder nicht
-  - Keine erweiterungsmöglichkeiten möglich, bspw. direktes ansteuern der Kamera
+  - "Lotterie" ob die Schaltzeit der Relais auch immer lange genug ist
+  - Geschwindigkeitsabhängig, d.h. auch die Schaltung der Relais
+  - Keine Erweiterungsmöglichkeiten möglich, bspw. direktes ansteuern der Kamera
+  - 100% Sicherheit das die Weiche nicht geschalten wird solange der Zug nicht über das Schaltgleis fährt
 
 -Pro:
   - Einfache Implementierung, d.h. Schaltzeit erhöhen, Schaltgleis einbauen
-  - kein weiterer Code nötig 
+  - kein weiterer Code nötig
+
+-Arbeitsaufwand:
+  -ca. 30 Minuten, neues Verdrahten und Schaltzeit anpassen
   
 Konzept 2:
 
-Die Weiche wird abhängig vom Input auf dem PiFace gesteuert. D.h. kommt ein high auf den Input an, wird über ein Javascript die 
-Weichenfunktion geschalten. 
+Die Weiche wird abhängig vom Input auf dem PiFace gesteuert. Das heisst ist der Input auf ground geschalten, wird über ein Javascript die 
+Weichenfunktion geschalten. Wird die Weiche über diese Funktion geschalten, kann auch direkt kontrolliert werden das kein anderer Benutzer 
+die Weiche schaltet, da der Server "beschäftigt" ist mit der Überwachung des Gleises. Durch diese Methode müssen die Relais nicht länger 
+geschalten werden, da diese erst geschalten werden, sobald der Zug über das Schaltgleis fährt.
 
 -Contra:
-  -Weiterer Code wird benötigt
-  -Mehr verdrahtung
-  -
+  - Weiterer Code wird benötigt
+  - Funktion der Schaltgleise müssen zu jeder Zeit gegeben sein
   
 -Pro:
   - Schaltgleis kann auch für zukünftige Erweiterungen benötigt werden
   - 100% Sicherheit, dass die Weiche nicht geschalten wird vor das der Zug darüber fährt
   - Relativ einfache Implementierung, d.h. Schaltgleis Javascript in Weichen Javascript einbauen
   - Weitere Schaltgleise können einfach eingebaut werden und so auch Kontrolliert werden
+  - Geschwindigkeitsunabhängig
+  
+ -Arbeitsaufwand:
+  -ca 1 Stunde, neues Verdrahten der Schaltgleise, Code in den Weichenschaltcode Implementieren 
   
 Konzept 3:
 
-Mittels Signalstellung vor der Weiche zuerst das Signal auf rot stellen, anschliessend einige Zeit warten (30-60 sekunden jenach 
-Geschwindigkeit des Zuges). Nach der Abgelaufenen Zeit die Weiche schalten und das Signal auf grün setzen somit kann der Zug weiterfahren. 
+Mittels Signalstellung vor der Weiche wird über den Pi zuerst das Signal auf rot gestellt. Nach der Abgelaufenen Zeit die Weiche schalten 
+und das Signal auf grün setzen somit kann der Zug weiterfahren. Mit diesem Konzept müssen die Relais nicht über eine längere Zeit geschalten
+werden. Jedoch ist dieses Konzept sehr Zeit- bzw. Geschwindigkeitsabhängig, daher muss auch sichergestellt werden, dass bei einer sehr hohen 
+bzw. tiefen Geschwindigkeit die Schaltzeiten des Signals bzw auch der Relais stimmen.
 
 -Contra:
   - Lange wartezeiten
   - Extra Code implementieren
   - keine 100% Sicherheit das der Zug am Signal steht
+  - Geschwindigkeitabhängig
   
-  -Pro:
-   - Einfache Steuerung des Signals
-   - Signalsteuerung kann auch für eventuelle zukünftige Erweiterungen benutzt werden
-  
+ -Pro:
+  - Einfache Steuerung des Signals
+  - Signalsteuerung kann auch für eventuelle zukünftige Erweiterungen benutzt werden
+   
+ -Arbeitsaufwand
+  - ca 2 Stunden, es muss neuer Code für das Signal implementiert und anschliessend in den Weichencode eingearbeitet werden. Weitere Ver-
+  drahtung des Signals mit dem Rapsberry Pi. 
   
   
   
