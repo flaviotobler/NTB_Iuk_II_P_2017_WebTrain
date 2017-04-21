@@ -1,0 +1,16 @@
+Zug Foto Varianten
+
+Variante 1:
+Der Benutzer kann über einen Button auf der Webseite ein Foto machen. 
+Danach erscheint ein Popup, über dieses wählt der Benutzer ein Speicherort auf seinem PC aus um das aufgenommene
+Bild lokal auf seinem PC zu speichern.
+
+Aufwand: 2h
+
+Variante 2:
+Der Benutzer kann über einen Button auf der Webseite ein Foto machen. 
+Das Foto wird auf dem Server gespeichert. Auf der Webseite kann eine Galerie angezeigt werden, 
+in der alle aufgenommenen Fotos ersichtlich sind. Die älteren Fotos werden mit der Zeit wieder gelöscht, 
+da nur begrenzt Speicher zur Verfügung steht. 
+
+Aufwand: 5h
