@@ -3,6 +3,8 @@ var express = require('express');
 var app = express();
 var request = require('request');
 var pfio = require("piface");
+var url = require("url");
+
 //initialize GPIO
 pfio.init();
 //set starting position
@@ -11,6 +13,12 @@ pfio.digital_write(0, 0);
 pfio.digital_write(1, 0);
 
 var state=0;
+
+/* serves all the static files */
+ app.get(/^(.+)$/, function(req, res){ 
+     console.log('static file request : ' + req.params);
+     res.sendfile( __dirname + req.params[0]); 
+ });
 
 /*
 If the links button is pressed on the homepage, the homepage will send a /links message,
@@ -43,11 +51,15 @@ app.post('/aussen', function (req, res)
 /*
 When the server gets started via nodejs the HTML site weiche.html gets called.
 */
+
  app.get('/', function (req, res) 
 	 	{
-  			res.sendFile(__dirname + '/Webseite/weiche.html');
+			var uri = url.parse(req.url).pathname;
+			console.log(uri);
+  			res.sendFile(__dirname + '/Webseite/index.html');
 		}
 	);
+
 
 /*
 Port 3000 is defined for the server call
