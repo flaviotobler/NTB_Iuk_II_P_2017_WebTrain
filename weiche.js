@@ -16,9 +16,9 @@ var state=0;
 If the links button is pressed on the homepage, the homepage will send a /links message,
 then the first relay on the piface is switched on and off again after a short period of time.
 */
-app.post('/links', function (req, res)
+app.post('/innen', function (req, res)
 		{
-			console.log("Button Links pressed"); //Output a debug message
+			console.log("Button innen pressed"); //Output a debug message
 			pfio.digital_write(0, 1); //Turn the switch to the left
 			setTimeout(linksaus, 1000); //Turn off the signal after a short period of time
 			state=0; //Save state (required when checking status)
@@ -30,9 +30,9 @@ app.post('/links', function (req, res)
 If the rechts button is pressed on the homepage, the homepage will send a /rechts message,
 then the second relay on the piface is switched on and off again after a short period of time.
 */
-app.post('/rechts', function (req, res) 
+app.post('/aussen', function (req, res) 
 	 	{
- 			console.log("Button rechts pressed"); //Output a debug message
+ 			console.log("Button aussen pressed"); //Output a debug message
 			pfio.digital_write(1, 1); //Turn the switch to the right
 			setTimeout(rechtsaus, 1000); //Turn off the signal after a short period of time
 			state=1; //Save state (required when checking status)
@@ -45,7 +45,7 @@ When the server gets started via nodejs the HTML site weiche.html gets called.
 */
  app.get('/', function (req, res) 
 	 	{
-  			res.sendFile(__dirname + '/weiche.html');
+  			res.sendFile(__dirname + '/Webseite/weiche.html');
 		}
 	);
 
