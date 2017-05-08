@@ -1,22 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js" lang="en">
 <head>
-<link rel="stylesheet" href="css/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
-<script src="js/script.js"></script>
+
+   <meta charset="utf-8">
+	<title>Webcam</title>
+	<meta name="Website für SystemEngineeringProjekt 2017" content="">  
+	<meta name="Cedric Sutter, Fabio Göldi" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="css/main.css">  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="https://use.fontawesome.com/ced285b6ee.js"></script>
+
 </head>
 
-<body>
-<div class="stream">
-<img src="/video.mjpg">
-</div>
-<div class="buttons button-area">
-<button id = "button-up"> Up </button> 
-<button id = "button-down"> Down </button>
-<button id = "button-right"> Right </button> 
-<button id = "button-left"> Left </button>
-<button id="test">Testbutton</button>
-</div>
+<body id="top">
+    <section id="intro">
+        
+       <div class="shadow-overlay"></div>
+      
+   		
+            <div class="content">
+                <div class="errors">
+                    <div class="alert alert-success alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Success!</strong> <p class="error-text">Indicates a successful or positive action.</p>
+                    </div>
+                    <div class="alert alert-danger alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Error!</strong> <p class="error-text">Indicates a successful or positive action.</p>
+                    </div>
+                </div>
+                <div class='video-link jumbotron'>
+	   				<img src="/video.mjpg" class="cam-stream" id="stream">
+	   			</div>
+                <div class="track-area">
+                    <img src="images/track.jpg" id="track-img">
+                    <button id = "button-pos1" class = "btn"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
+                    <button id = "button-pos2" class = "btn"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
+                </div>
+                <div class="button-area jumbotron">
+                    <p>Controls: </p>
+                    <button  id = "button-up" class = "btn"> Up </button>
+                    
+                    <button id = "button-left" class = "btn"> Left </button>
+                    <button id = "button-right" class = "btn"> Right </button>
+                  
+                    <button id = "button-down" class = "btn"> Down </button>
 
+                    <button id = "button-getpos" class = "btn"> Get Position </button>
+
+                    <button class="btn" id="save"><a id="dLink" download="ntb-zug.jpg"><i class="fa fa-camera" aria-hidden="true"></i></a></button>
+                </div>
+             
+           		 		
+   	</div> 
+    </section>
+    
+    
+
+
+
+<script type="text/javascript">
+  
+
+</script>
 </body>
 </html>

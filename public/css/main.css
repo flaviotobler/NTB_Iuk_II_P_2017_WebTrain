@@ -1,0 +1,188 @@
+
+
+html {
+	font-size: 10px;
+}
+@media only screen and (max-width:1024px) {
+	html {
+		font-size: 9.375px;
+	}
+}
+@media only screen and (max-width:768px) {
+	html {
+		font-size: 10px;
+	}
+}
+@media only screen and (max-width:400px) {
+	html {
+		font-size: 9.375px;
+	}
+}
+
+html, body {
+    width: 100%;
+}
+body {
+	background: #14181E;
+	font-family: "merriweather-regular", serif;
+	font-size: 1.6rem;
+	line-height: 3rem;
+	color: #737373;
+    
+}
+/* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+
+
+#intro {
+	/*background: #14181E url(../images/intro-bg.jpg) no-repeat center;*/
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	background-size: cover;
+	width: 100%;
+	/*height: 100%;
+	min-height: 720px;*/
+	
+	position: static;
+}
+
+
+
+.alert{
+    position: fixed;
+    top: 35px;
+    left: 0px;
+    right: 0px;
+    display: none;
+    width: 85%;
+    margin: auto;
+}
+.errors{
+    height: 20px;
+}
+
+
+.track-area{
+    margin-top: 45px;
+    position: relative;
+    width: 500px;
+    margin: auto;
+    height: 200px;
+    
+}
+#track-img{
+    width: 100%;
+    height: auto;
+    
+    
+}
+#button-pos1{
+    position: absolute;
+    top: 50px;
+    left: -18px;
+}
+#button-pos2{
+    position: absolute;
+    top: 60px;
+    right: -18px;
+}
+.video-link{
+    margin-bottom: 30px;
+}
+.cam-stream{
+    width: 100%;
+}
+
+
+
+
+/*RESPONSIVE */
+@media only screen and (max-width:768px) {
+	#intro {
+		
+	}
+    .video-link{
+        width: 100%;
+        margin: auto;
+    }
+}
+@media only screen and (max-width:530px) {
+	.track-area{
+        margin-top: 45px;
+        position: relative;
+        width: 300px;
+        margin: auto;
+        height: 200px;
+    
+    }
+    #button-pos1{
+    top: 50%;
+    left: -18px;
+}
+#button-pos2{
+    top: 50%;
+    right: -18px;
+}
+}
+@media only screen and (max-width:400px) {
+	#intro {
+		
+	}
+
+}
+
+
+
+
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+  padding: 14px 24px;
+  font-size: 21px;
+}
+
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 30px;
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+    .video-link{
+        
+        margin: auto;
+    }
+    .cam-stream{
+        margin: auto;
+        width: 650px;
+    }
+}
