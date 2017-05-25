@@ -73,6 +73,14 @@
        	  </button>
         </div>
       	</div>
+	  <div class="row">
+	    <div class="col-sm-2">&nbsp;
+	    	<button type="button" class="btn btn-default"  onClick="signal_onoff()">
+  	  	  <img src="img/signal_geschlossen.svg" id="signal_onoff" class="img-responsive" alt="Signal">
+       	  </button>
+       	</div>
+	    <div class="col-sm-10">&nbsp;</div>
+      </div>
 	</div>
   
 <script>
@@ -89,6 +97,16 @@
 		else
 			document.getElementById('lok_onoff').setAttribute('src', "img/dampflok_off.svg");
 	}
+	
+	function signal_onoff() {
+		if(document.getElementById('signal_onoff').getAttribute('src') == "img/signal_geschlossen.svg"){
+			document.getElementById('signal_onoff').setAttribute('src', "img/signal_offen.svg"); 
+		}
+		else
+			document.getElementById('signal_onoff').setAttribute('src', "img/signal_geschlossen.svg");
+	}
+	
+	
 	
 	
 </script>
