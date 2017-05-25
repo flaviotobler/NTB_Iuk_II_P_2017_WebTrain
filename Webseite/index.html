@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
     <title>Webtrain</title>
     <!-- Bootstrap -->
 	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="webtrain.css" rel="stylesheet" type="text/css">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -22,7 +22,7 @@
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#topFixedNavbar1" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-        <a class="navbar-brand" href="#">Brand</a></div>
+        <a class="navbar-brand" href="#">NTB</a></div>
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="topFixedNavbar1">
         <ul class="nav navbar-nav">
@@ -42,7 +42,7 @@
           <li><a href="#">Link</a></li>
           <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>innen
+              <li><a href="#">Action</a></li>
               <li><a href="#">Another action</a></li>
               <li><a href="#">Something else here</a></li>
             </ul>
@@ -61,108 +61,35 @@
   		</div>
 	  <div class="row">
     		<div class="col-sm-2">
-   			  <button id="button_aussen" type="button_aussen" class="btn btn-primary" onClick="aussen()">Aussen</button>
-           	  <button id="button_innen" type="button_innen" class="btn btn-primary" onClick="innen()">Innen</button>
+   			  <button type="button_aussen" class="btn btn-primary" onClick="aussen()">Aussen</button>
+           	  <button type="button_innen" class="btn btn-primary" onClick="innen()">Innen</button>
             </div>
-				<div class="col-sm-8">
+				<div class="col-sm-8" id="bahnanlage">
 				  <img src="img/BahnanlageAussen.svg" id="bild" class="img-responsive" alt="Bahnanlage">
 				</div>
-       	<div class="col-sm-2" id="demo"></div>
+       	<div class="col-sm-2">
+       	  <button type="button" class="btn btn-default"  onClick="lok_onoff()">
+  	  	  <img src="img/dampflok_off.svg" id="lok_onoff" class="img-responsive" alt="Lok">
+       	  </button>
+        </div>
       	</div>
 	</div>
   
 <script>
-// AJAX-function-calls for the buttons 
-$(document).ready(function()
-	{
-		checkStatus_send();
-		$('#button_aussen').click(function()
-			{
-				$.post('/aussen',responseReceived);
-			}
-		);
-		$('#button_innen').click(function()
-			{
-				$.post('/innen',responseReceived);
-			}
-		);
-		
+	function aussen() {
+		document.getElementById('bild').setAttribute('src', "img/BahnanlageAussen.svg"); 
 	}
-);
-
-function responseReceived(data, status)
-		{
-			if("success" == status)		//Check the server-connection
-			{
-				switch (data)
-				{
-					case "0":
-					{
-						alert("Weiche innen.");	//Return the status in a alert-message
-						break;
-					}
-					case "1":
-					{
-						alert("Weiche aussen.");		//Return the status in a alert-message
-						break;
-					}
-					default:
-					{
-						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
-					}
-				}
-			}
-			else
-			{
-				alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
-			}
-		}
-		
-function checkStatus_send()
-{
-	$.post('/getState',checkStatus);
-}
-	
-function checkStatus(data, status)
-{
-	if("success" == status)
-	{
-		switch (data)	//Check the received data
-				{
-					case "0":
-					{
-						document.getElementById('bild').setAttribute('src', "img/BahnanlageInnen.svg"); 
-						break;
-					}
-					case "1":
-					{
-						document.getElementById("bild").setAttribute("src", "img/BahnanlageAussen.svg");	
-						break;
-					}
-					default:
-					{
-						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
-					}
-				}
-	}
-	else
-	{
-		alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
-	}
-	setTimeout(checkStatus_send, 1000);	
-}
-/*
-function aussen() {
-    //document.getElementById("innen").visibility = "visible";
-	//document.getElementById("bild").setAttribute("src:img/BahnanlageAussen.svg");
-	document.getElementById('bild').setAttribute('src', "img/BahnanlageAussen.svg"); 
-	//document.getElementById("bild").setAttribute("style","visibility:hidden");
-}
 	function innen() {
-    //document.getElementById("innen").visibility = "visible";
-	document.getElementById("bild").setAttribute("src", "img/BahnanlageInnen.svg");
-	//document.getElementById("bild").setAttribute("style","visibility:hidden");
-}*/
+		document.getElementById('bild').setAttribute("src", "img/BahnanlageInnen.svg");
+	}
+	function lok_onoff() {
+		if(document.getElementById('lok_onoff').getAttribute('src') == "img/dampflok_off.svg"){
+			document.getElementById('lok_onoff').setAttribute('src', "img/dampflok_on.svg"); 
+		}
+		else
+			document.getElementById('lok_onoff').setAttribute('src', "img/dampflok_off.svg");
+	}
+	
 	
 </script>
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
