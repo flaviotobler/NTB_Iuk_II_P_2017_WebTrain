@@ -9,6 +9,24 @@ var app = express();
 var request = require('request');
 var MjpegProxy = require('mjpeg-proxy').MjpegProxy;
 
+/* NEW */
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+
+app.use(cookieParser());
+app.use(session({secret: "Shh, its a secret!"}));
+
+var bodyParser = require('body-parser'); //um JSON Daten von POST request zu parsen
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+var multer = require('multer'); // v1.0.5
+var upload = multer(); // for parsing multipart/form-data
+
+
+var queue = [];
+var director; //session id der session, welche die Kontrolle über die kamera hat
+
+
 /*über das hinterlegte passwort und die IP Adresse wird die Url um der Kamera Befehle zu schicken gebildet */
 var baseUrl = 'http://'+ PW.USERNAME +':'+ PW.PASSWORD +'@'+ PW.CAMERAIP +'';
 
@@ -123,6 +141,17 @@ app.get('/test', function (req, res) {
   
 });
 
+//Zugsteuerung
+//Request müssen zuerst an einen weiteren Raspberry pi weitergegeben werden. die zurückgegeben response wird dann an den Client geschickt
+app.post('/start', function (req, res){
+    request.post({url:'http://10.0.0.102:3000/start'}, function(err, httpResponse, body) {
+          if (err) {
+            console.log('upload failed:', err);
+          }
+        res.send(httpResponse);
+    });
+});
+
 /* app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 }); */
@@ -136,7 +165,7 @@ app.listen(PW.PORT, function () {
   console.log('Example app listening on port 3000!');
 });
 
-
+//üer die vordefinierte url und die verfügbaren kommandos können auf der Kamera aktionen ausgeführt werden
 function camAction(param){
     request(baseUrl +'/axis-cgi/com/ptz.cgi?' + param + '', function(error){
         	if(error){
@@ -174,6 +203,7 @@ function getPosition(callback){
     
 }
 
+//kann entfernt werden, alte warteschlange
 function checkPassedTime(){
     timeFlag = false;
     actTime = Date.now();
@@ -187,4 +217,136 @@ function checkPassedTime(){
 	
 	
     return timeFlag;
+}
+
+
+/* NEW TO ADD */
+
+//nach einer Vorgegeben Zeit, wierd die Funktion shiftQueue aufgerufen, die alle CLients in der Warteschlange um eins schiebt
+setInterval(shiftQueue, 10000); //Zeit in Millisekunden nach der Die Abstimmung fertig ist
+
+var lastShiftTime = Date.now();    
+//session.id ist eine einzigaritge id für jede session. So können clients identifiziert werden und auseinander gehalten werden, mit res.status() können http statuscodes als response mitgeschickt werden
+
+//die warteschlange wird um eins verschoben, falls die Warteschlange leer ist, bleibt der director derselbe
+function shiftQueue(){
+    if(queue.length > 0){
+        director = queue[0];
+        queue.shift();
+    }else{
+        //director bleibt bestehen, so hat er die kontrolle so lange bis ein andere client sich für die Warteschlange registriert
+        console.log("Time is up but nobody registered, director remains the same");
+    }
+    lastShiftTime = Date.now();
+}
+
+//funktion, um die verbleibende Zeit bis zum nächsten Warteschalngenwechsel aufzurufen
+app.get('/timeRemaining', function(req, res){
+    res.send(Date.now() - lastShiftTime);
+});
+
+
+
+
+
+/*zum testen, kann wieder entfernt werden*/
+app.get('/', function(req, res){
+   if(req.session.page_views){
+      req.session.page_views++;
+      res.send("You visited this page " + req.session.page_views + " times");
+   }else{
+      req.session.page_views = 1;
+      res.send("successfully registered for queue");
+   }
+});
+
+
+
+//Funktion, damit vom Client die Aktuelle Position in der Warteschlange aufgerufen werden kann.
+app.get('/queuePos', function(req, res){
+   if(queue.indexOf(req.session.id >= 0)){
+        res.status(200).send(queue.indexOf(req.session.id));  //Findet den index der ausgewählten session, die richtige position zurückgegeben wird
+      }else{
+      res.send("not in queue");
+    }
+});
+
+//Client registriert sich in der Warteschlange, mittels SessionID wird der CLient eindeutig identifiziert. Falls der Client bereits in der
+//Warteschlange ist, wir dr Vorgang abgebrochen, da jeder CLient nur einmal registriert sein kann.
+app.post('/register', function(req, res){
+    console.log(req.session.id);
+    if(queue.indexOf(req.session.id)  >= 0){
+        res.status(500).send('Already registered in queue');
+        console.log(queue);
+      }else{
+        var queuePos = queue.push(req.session.id);
+        res.status(200).send('successfully registered youre at position ' + queuePos);
+        console.log(queue);
+        }
+});
+
+//gewünschte Aktion des CLients. Es wird überprüft ob der CLient auch Berechtigt ist, die Aktion auszüführen
+app.post('/action', upload.array(), function(req, res){
+    if(req.session.id==director){
+        console.log(req.body.movement);
+        
+        doAction(req.body.movement);
+        res.send("success");
+        
+    }
+    else{
+        res.send("not in control, queue up!");
+    }
+    
+});
+
+//falls die prüfung ob der CLient berechtig ist besteht, wird die Funktion aufgerufen, 
+//mittels mitgegbenen POST Parametern, wird die gewünschte Aktion ausgeführt
+function doAction(movement){
+    switch(movement){
+        case "up":
+            camAction("move=up");
+            postData.timePassed = true;
+            postData.postText = "action successfully executed";            
+        break;
+        
+        case "down":
+            camAction("move=down");
+            postData.timePassed = true;
+            postData.postText = "action successfully executed"; 
+        break;
+            
+        case "left":
+            camAction("move=left");
+            postData.timePassed = true;
+            postData.postText = "action successfully executed"; 
+        break;
+            
+        case "right":
+            camAction("move=right");
+            postData.timePassed = true;
+            postData.postText = "action successfully executed"; 
+        break;
+            
+        case "pos1":
+            //mit pan= kann eine absolute pan (x) Position angegeben werden
+            camAction("pan="+PW.POS1.x);
+            //mit tilt= kann eine absolute tilt (y) Position angegeben werden
+            camAction("tilt="+PW.POS1.y);
+            //code für focus zoom etc.
+            postData.timePassed = true;
+            postData.postText = "action successfully executed"; 
+        break;
+        case "pos2":
+            //mit pan= kann eine absolute pan (x) Position angegeben werden
+            camAction("pan="+PW.POS2.x);
+            //mit tilt= kann eine absolute tilt (y) Position angegeben werden
+            camAction("tilt="+PW.POS2.y);
+            //code für focus zoom etc.
+            postData.timePassed = true;
+            postData.postText = "action successfully executed"; 
+        break;
+              
+    }
+    
 }
