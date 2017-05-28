@@ -17,55 +17,47 @@
 </head>
 
 <body id="top">
-    <section id="intro">
+    <nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			  </button>
+			  
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		  <ul class="nav navbar-nav">
+            <li class="active"><a href="/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+			<li ><a href="camcontrol.html">Kamerasteuerung</a></li>
+			<li><a href="weiche.html">Weichensteuerung</a></li>
+			<li><a href="zug.html">Zugsteuerung</a></li>
+			
+		  </ul>
+		  
+		</div><!-- /.navbar-collapse -->
+  </div>
+ </nav>
+	
+	
+	<section id="intro">
+		<div class="content jumbotron">
+            <div class="container">
+                <h1>IUK II Projekt</h1>
+                <h3>Untertitel</h3>
+                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet</p>
+            
+            
+            </div>
+            
         
-       <div class="shadow-overlay"></div>
-      
-   		
-            <div class="content">
-                <div class="errors">
-                    <div class="alert alert-success alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>Success!</strong> <p class="error-text">Indicates a successful or positive action.</p>
-                    </div>
-                    <div class="alert alert-danger alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        <strong>Error!</strong> <p class="error-text">Indicates a successful or positive action.</p>
-                    </div>
-                </div>
-                <div class='video-link jumbotron'>
-	   				<img src="/video.mjpg" class="cam-stream" id="stream">
-	   			</div>
-                <div class="track-area">
-                    <img src="images/track.jpg" id="track-img">
-                    <button id = "button-pos1" class = "btn"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
-                    <button id = "button-pos2" class = "btn"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
-                </div>
-                <div class="button-area jumbotron">
-                    <p>Controls: </p>
-                    <button  id = "button-up" class = "btn"> Up </button>
-                    
-                    <button id = "button-left" class = "btn"> Left </button>
-                    <button id = "button-right" class = "btn"> Right </button>
-                  
-                    <button id = "button-down" class = "btn"> Down </button>
-
-                    <button id = "button-getpos" class = "btn"> Get Position </button>
-
-                    <button class="btn" id="save"><a id="dLink" download="ntb-zug.jpg"><i class="fa fa-camera" aria-hidden="true"></i></a></button>
-                </div>
-             
-           		 		
-   	</div> 
+        
+        </div>	
     </section>
     
-    
-
-
-
-<script type="text/javascript">
-  
-
-</script>
 </body>
 </html>
