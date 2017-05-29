@@ -1,62 +1,35 @@
 $(document).ready(function(){ 
 
-
+      $('#Register').click(function(){
+       $.post("/register", function(data){addSucces(data);}
+	   );
+});
 
        $('#button-up').click(function(){
-         $.post('/up', function(data){
-             if(data.timePassed){
-                 addSucces(data.postText);
-             }else{
-                 addError(data.postText);
-             }
-         });
+         $.post("/action", {"movement": "up"}, function(data){addSucces(data);}
+		 );
 });
         $('#button-down').click(function(){
-         $.post('/down', function(data){
-             if(data.timePassed){
-                 addSucces(data.postText);
-             }else{
-                 addError(data.postText);
-             }
-         });
+         $.post("/action", {"movement": "down"}, function(data){addSucces(data);}
+		 );
 });
         $('#button-right').click(function(){
-         $.post('/right', function(data){
-             if(data.timePassed){
-                 addSucces(data.postText);
-             }else{
-                 addError(data.postText);
-             }
-         });
+         $.post("/action", {"movement": "right"}, function(data){addSucces(data);}
+		 );
 });
         $('#button-left').click(function(){
-         $.post('/left', function(data){
-             if(data.timePassed){
-                 addSucces(data.postText);
-             }else{
-                 addError(data.postText);
-             }
-         });
+         $.post("/action", {"movement": "left"}, function(data){addSucces(data);}
+		 );
 });
     
         $('#button-pos1').click(function(){
-         $.post('/pos1', function(data){
-             if(data.timePassed){
-                 addSucces(data.postText);
-             }else{
-                 addError(data.postText);
-             }
-         });
+         $.post("/action", {"movement": "pos1"}, function(data){addSucces(data);}
+		 );
 });
     
         $('#button-pos2').click(function(){
-         $.post('/pos2', function(data){
-             if(data.timePassed){
-                 addSucces(data.postText);
-             }else{
-                 addError(data.postText);
-             }
-         });
+         $.post("/action", {"movement": "pos2"}, function(data){addSucces(data);}
+		 );
 });
     
         $('#button-getpos').click(function(){
@@ -79,15 +52,7 @@ $(document).ready(function(){
 				$.post('/innen',responseReceived);
 			}
 		);
-}); // document ready closing
-
-  /*document.getElementById('save').onclick = function () {
-
-       
-        window.open(c.toDataURL('image/png'));
-	window.location.href = img.src.replace('image/png', 'image/octet-stream');
-    };*/
-
+}); 
 	
 	$('#dLink').click('click', function(){
 		var c = document.createElement('canvas');
@@ -105,7 +70,55 @@ $(document).ready(function(){
 	});
 
 });
+// document ready closing
 
+  /*document.getElementById('save').onclick = function () {
+
+       
+        window.open(c.toDataURL('image/png'));
+	window.location.href = img.src.replace('image/png', 'image/octet-stream');
+    };*/
+var waitTime;	
+$.get("/waitingTime", function(wtime){
+		waitTime = parseInt(wtime);
+	
+	
+	}
+);
+setInterval(checkTime, 1000);
+
+function checkTime() {
+	$.get("/timeRemaining", function(timestring){
+		/*console.log("timestring" + timestring);*/
+		$.get("/queuePos", function(posstring){
+			
+			/*console.log("pos " + posstring);*/
+			if(posstring == "not in queue"){
+				/*console.log("Nicht in Warteschleife!");*/
+				
+				var el = document.getElementById("textQueue");
+				el.innerHTML = "Bitte für die Warteschleife registrieren!";
+				
+			}else if (posstring == "youre director"){
+				
+				var el = document.getElementById("textQueue");
+				el.innerHTML = "Sie haben die Kontrolle!";
+				
+			}
+			else{
+				pos = parseInt(posstring);
+				time = parseInt(timestring);
+				x = time + waitTime * (pos) ;
+				xn = Math.round(x/1000);
+				var el = document.getElementById("textQueue");
+				el.innerHTML = "Zeit bis sie an der Reihe sind: " + xn.toString() + " Sekunden";
+			}
+	});
+		
+	});
+
+	
+}
 function download() {
 
 };

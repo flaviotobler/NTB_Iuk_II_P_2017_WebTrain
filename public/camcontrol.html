@@ -3,16 +3,19 @@
 <head>
 
    <meta charset="utf-8">
-	<title>Webcam</title>
+	<title>WebTrain</title>
 	<meta name="Website für SystemEngineeringProjekt 2017" content="">  
 	<meta name="Cedric Sutter, Fabio Göldi" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="css/main.css">  
+	 
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/script.js"></script>
     <script src="https://use.fontawesome.com/ced285b6ee.js"></script>
+	<link rel="stylesheet" href="css/main.css">
 
 </head>
 
@@ -33,9 +36,7 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
             <li><a href="/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
-			<li class="active"><a href="#">Kamerasteuerung <span class="sr-only">(current)</span></a></li>
-			<li><a href="weiche.html">Weichensteuerung</a></li>
-			<li><a href="zug.html">Zugsteuerung</a></li>
+			<li class="active"><a href="#">Zugsteuerung<span class="sr-only">(current)</span></a></li>
 			
 		  </ul>
 		  
@@ -60,22 +61,28 @@
                 <div class='video-link jumbotron'>
 	   				<img src="/video.mjpg" class="cam-stream" id="stream">
 	   			</div>
-                <div class="track-area">
-                    <img src="images/Bahnanlage_sw.svg" id="track-img">
+                
+                <div class="button-area jumbotron">
+					<p>Warteschleife:</p>
+					<p id = "small">Knopf drücken um sich in der Warteschleife zu registrieren. </br>Wenn sie an der Reihe sind, haben sie 20 Sekunden Zeit um den Zug zu steuern.</p>
+					
+					<p><button id = "Register" class = "btn">Register</button>  <span id = "textQueue"></span></p>					
+                    <p>Kamerakontrolle:</p>
+                    <button  id = "button-up" class = "btn"> Nach oben </button>                   
+                    <button id = "button-left" class = "btn"> Links </button>
+                    <button id = "button-right" class = "btn"> Rechts </button>                  
+                    <button id = "button-down" class = "btn"> Nach unten </button>
+                    <button class="btn" id="save"><a id="dLink" download="ntb-zug.jpg"><i class="fa fa-camera" aria-hidden="true"></i></a></button>
+					<p>Zugkontrolle:</p>
+					<button type="button-start" class="btn">Start</button>
+					<button type="button-stop" class="btn">Stop</button>
+					<button id="button_aussen" type="button_aussen" class="btn" onClick="aussen()">Weiche-Aussen</button>
+					<button id="button_innen" type="button_innen" class="btn" onClick="innen()">Weiche-Innen</button>
+                </div>
+				<div class="track-area">
+                    <img src="images/BahnanlageAussen.svg" id="bild" class="img-responsive" alt="Bahnanlage">
                     <button id = "button-pos1" class = "btn"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
                     <button id = "button-pos2" class = "btn"><i class="fa fa-video-camera" aria-hidden="true"></i></button>
-                </div>
-                <div class="button-area jumbotron">
-                    <p>Controls:</p>
-                    <button  id = "button-up" class = "btn"> Nach oben </button>
-                    
-                    <button id = "button-left" class = "btn"> Links </button>
-                    <button id = "button-right" class = "btn"> Rechts </button>
-                  
-                    <button id = "button-down" class = "btn"> Nach unten </button>
-
-
-                    <button class="btn" id="save"><a id="dLink" download="ntb-zug.jpg"><i class="fa fa-camera" aria-hidden="true"></i></a></button>
                 </div>
               		
 		</div> 
