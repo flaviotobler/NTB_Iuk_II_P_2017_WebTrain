@@ -39,19 +39,15 @@ var prevTime = Date.now();
 var actTime = 0;
 var timeFlag = false;
 var postData = {timePassed: false, postText: "", timeLeft: 0};
-/* http POST request werden vom node.js server verarbeitet in den flgenden express funktionen
+
+var zoom = 1;
+camAction("zoom="+zoom+"");
+/* http POST request werden vom node.js server verarbeitet in den folgenden express funktionen
 wenn ein POST request die jeweilige URL ausgeführt wird, z.B. http://URLNODEJS/up wird die dazugehörige Funktion in app.post('/up, function(){} ausgeführt  */
-app.post('/up', function (req, res) {
-    console.log("Button Up pressed");
-    if(checkPassedTime()){
-        camAction("move=up");
-        postData.timePassed = true;
-        postData.postText = "action successfully executed";
-    }else{
-        postData.timePassed = false;
-        postData.postText = "not enough time passed";
-    }
-    res.send(postData);
+/* app.post('/up', function (req, res) {
+    doAction('start', function(httpRes){
+        res.send(httpRes);
+    })
 });
 
 app.post('/down', function (req, res) {
@@ -129,7 +125,7 @@ app.post('/pos2', function (req, res) {
     }
     res.send(postData);
   
-});
+}); */
 
 app.get('/test', function (req, res) {
     
@@ -143,14 +139,10 @@ app.get('/test', function (req, res) {
 
 //Zugsteuerung
 //Request müssen zuerst an einen weiteren Raspberry pi weitergegeben werden. die zurückgegeben response wird dann an den Client geschickt
-app.post('/start', function (req, res){
-    request.post({url:'http://10.0.0.102:3000/start'}, function(err, httpResponse, body) {
-          if (err) {
-            console.log('upload failed:', err);
-          }
-        res.send(httpResponse);
-    });
-});
+/* app.post('/start', function (req, res){
+    doMovement('start');
+    res.send("Befehl gesendet");
+}); */
 
 /* app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -204,7 +196,7 @@ function getPosition(callback){
 }
 
 //kann entfernt werden, alte warteschlange
-function checkPassedTime(){
+/*function checkPassedTime(){
     timeFlag = false;
     actTime = Date.now();
 	if(actTime - prevTime > 5000 ){
@@ -217,13 +209,13 @@ function checkPassedTime(){
 	
 	
     return timeFlag;
-}
+} */
 
 
 /* NEW TO ADD */
 
 //nach einer Vorgegeben Zeit, wierd die Funktion shiftQueue aufgerufen, die alle CLients in der Warteschlange um eins schiebt
-setInterval(shiftQueue, 10000); //Zeit in Millisekunden nach der Die Abstimmung fertig ist
+setInterval(shiftQueue, PW.WAITINGTIME); //Zeit in Millisekunden nach der Die Abstimmung fertig ist
 
 var lastShiftTime = Date.now();    
 //session.id ist eine einzigaritge id für jede session. So können clients identifiziert werden und auseinander gehalten werden, mit res.status() können http statuscodes als response mitgeschickt werden
@@ -238,11 +230,13 @@ function shiftQueue(){
         console.log("Time is up but nobody registered, director remains the same");
     }
     lastShiftTime = Date.now();
+    //console.log('Last shift time' + lastShiftTime);
 }
 
 //funktion, um die verbleibende Zeit bis zum nächsten Warteschalngenwechsel aufzurufen
 app.get('/timeRemaining', function(req, res){
-    res.send(Date.now() - lastShiftTime);
+    //console.log(Date.now() - lastShiftTime);
+    res.send((PW.WAITINGTIME - (Date.now() - lastShiftTime)).toString());
 });
 
 
@@ -264,78 +258,137 @@ app.get('/', function(req, res){
 
 //Funktion, damit vom Client die Aktuelle Position in der Warteschlange aufgerufen werden kann.
 app.get('/queuePos', function(req, res){
-   if(queue.indexOf(req.session.id >= 0)){
-        res.status(200).send(queue.indexOf(req.session.id));  //Findet den index der ausgewählten session, die richtige position zurückgegeben wird
-      }else{
-      res.send("not in queue");
-    }
+    console.log(queue.indexOf(req.session.id));
+    if(req.session.id == director){
+        res.send("youre director");
+    }else if(queue.indexOf(req.session.id)  >= 0){
+            res.send(queue.indexOf(req.session.id).toString());  //Findet den index der ausgewählten session, die richtige position zurückgegeben wird
+        }else{
+          res.send("not in queue");
+        }
 });
+
+
 
 //Client registriert sich in der Warteschlange, mittels SessionID wird der CLient eindeutig identifiziert. Falls der Client bereits in der
 //Warteschlange ist, wir dr Vorgang abgebrochen, da jeder CLient nur einmal registriert sein kann.
 app.post('/register', function(req, res){
     console.log(req.session.id);
     if(queue.indexOf(req.session.id)  >= 0){
-        res.status(500).send('Already registered in queue');
+        res.status(500).send('Bereits registriert in der Warteschlange');
         console.log(queue);
+      }else if(req.session.id == director){
+        res.send('Kann nicht registrieren, sie haben bereits die Kontrolle');
+        
       }else{
         var queuePos = queue.push(req.session.id);
-        res.status(200).send('successfully registered youre at position ' + queuePos);
+        res.status(200).send('Erfolgreich registriert, du bist auf Position ' + queuePos);
         console.log(queue);
         }
+});
+
+app.get('/waitingTime', function(req, res){
+    res.send(PW.WAITINGTIME.toString());
 });
 
 //gewünschte Aktion des CLients. Es wird überprüft ob der CLient auch Berechtigt ist, die Aktion auszüführen
 app.post('/action', upload.array(), function(req, res){
     if(req.session.id==director){
         console.log(req.body.movement);
+        switch(req.body.movement){
+                //für actions auf diesem server
+                case 'up', 'down', 'left', 'right', 'pos1', 'pos2': 
+                    doAction(req.body.movement);
+                    res.send("erfolgreich");
+                break;
+                //für actions auf den anderen Raspis
+                case 'start', 'stop', 'aussen', 'innen':
+                    doAction(req.body.movement, function(httpRes){
+                        res.send(httpRes);
+                    })
+                break;
+            }
         
-        doAction(req.body.movement);
-        res.send("success");
+
         
     }
     else{
-        res.send("not in control, queue up!");
+        res.send("Du bist nicht an der Reihe, registrere dich für die Warteschlange!");
     }
     
 });
 
 //falls die prüfung ob der CLient berechtig ist besteht, wird die Funktion aufgerufen, 
 //mittels mitgegbenen POST Parametern, wird die gewünschte Aktion ausgeführt
-function doAction(movement){
+function doAction(movement, callback){
     switch(movement){
+        //zug start stop, weichensteuerung etc requests werden an einen anderen Raspi weitergeleitet. über callback funktionen, kan die rsponse wieder an den client geschickt werden
+        case "start":
+                request.post({url:'http://10.0.0.101:3000/start'}, function(err, httpResponse, body) {
+                    if (err) {
+                    console.log('operation failed:', err);
+                    }
+                    callback(httpResponse);
+                });
+            break;
+        case "stop":
+                request.post({url:'http://10.0.0.101:3000/stop'}, function(err, httpResponse, body) {
+                    if (err) {
+                    console.log('operation failed:', err);
+                    }
+                    callback(httpResponse);
+                });
+            break;
+        case "aussen":
+                request.post({url:'http://10.0.0.102:3000/aussen'}, function(err, httpResponse, body) {
+                    if (err) {
+                    console.log('operation failed:', err);
+                    }
+                    callback(httpResponse);
+                });
+            break;
+        case "innen":
+                request.post({url:'http://10.0.0.102:3000/innen'}, function(err, httpResponse, body) {
+                    if (err) {
+                    console.log('operation failed:', err);
+                    }
+                    callback(httpResponse);
+                });
+            break;
         case "up":
             camAction("move=up");
-            postData.timePassed = true;
-            postData.postText = "action successfully executed";            
+            
         break;
         
         case "down":
             camAction("move=down");
-            postData.timePassed = true;
-            postData.postText = "action successfully executed"; 
+
         break;
             
         case "left":
             camAction("move=left");
-            postData.timePassed = true;
-            postData.postText = "action successfully executed"; 
+
         break;
             
         case "right":
             camAction("move=right");
-            postData.timePassed = true;
-            postData.postText = "action successfully executed"; 
+
         break;
-            
+        case "zoom+":
+            camAction("zoom="+(zoom+1)+"");
+            zoom++;
+        break;
+        case "zoom-":
+            camAction("zoom="+(zoom-1)+"");
+            zoom--;
+        break;
         case "pos1":
             //mit pan= kann eine absolute pan (x) Position angegeben werden
             camAction("pan="+PW.POS1.x);
             //mit tilt= kann eine absolute tilt (y) Position angegeben werden
             camAction("tilt="+PW.POS1.y);
             //code für focus zoom etc.
-            postData.timePassed = true;
-            postData.postText = "action successfully executed"; 
+
         break;
         case "pos2":
             //mit pan= kann eine absolute pan (x) Position angegeben werden
@@ -343,8 +396,7 @@ function doAction(movement){
             //mit tilt= kann eine absolute tilt (y) Position angegeben werden
             camAction("tilt="+PW.POS2.y);
             //code für focus zoom etc.
-            postData.timePassed = true;
-            postData.postText = "action successfully executed"; 
+
         break;
               
     }
