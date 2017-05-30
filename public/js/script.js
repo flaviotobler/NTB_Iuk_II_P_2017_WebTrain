@@ -1,34 +1,78 @@
+var waitTime;
+var zugState;
+var signalState;
+
 $(document).ready(function(){ 
+    
+    //click events an die button binden, die einen get/post an den nodejs server auslösen
 
       $('#Register').click(function(){
-       $.post("/register", function(data){addSucces(data);}
+       $.post("/register", function(data){addInfo(data);}
 	   );
 });
 
        $('#button-up').click(function(){
-         $.post("/action", {"movement": "up"}, function(data){addSucces(data);}
+         $.post("/action", {"movement": "up"}, function(data){addInfo(data);}
 		 );
 });
         $('#button-down').click(function(){
-         $.post("/action", {"movement": "down"}, function(data){addSucces(data);}
+         $.post("/action", {"movement": "down"}, function(data){addInfo(data);}
 		 );
 });
         $('#button-right').click(function(){
-         $.post("/action", {"movement": "right"}, function(data){addSucces(data);}
+         $.post("/action", {"movement": "right"}, function(data){addInfo(data);}
 		 );
 });
         $('#button-left').click(function(){
-         $.post("/action", {"movement": "left"}, function(data){addSucces(data);}
+         $.post("/action", {"movement": "left"}, function(data){addInfo(data);}
 		 );
 });
     
         $('#button-pos1').click(function(){
-         $.post("/action", {"movement": "pos1"}, function(data){addSucces(data);}
+         $.post("/action", {"movement": "pos1"}, function(data){addInfo(data);}
 		 );
 });
     
         $('#button-pos2').click(function(){
-         $.post("/action", {"movement": "pos2"}, function(data){addSucces(data);}
+         $.post("/action", {"movement": "pos2"}, function(data){addInfo(data);}
+		 );
+});
+        $('#button-zoom1').click(function(){
+         $.post("/action", {"movement": "zoom+"}, function(data){addInfo(data);}
+		 );
+});
+        $('#button-zoom2').click(function(){
+         $.post("/action", {"movement": "zoom-"}, function(data){addInfo(data);}
+		 );
+});
+        $('#button-start-stop').click(function(){
+        if(zugState==0){
+            $.post("/action", {"movement": "start"}, function(data){addInfo(data)});  
+        }else{
+            $.post("/action", {"movement": "stop"}, function(data){addInfo(data)});  
+        }
+         
+});
+
+        $('#button-signalanaus').click(function(){
+        if(signalState==1){
+            $.post("/action", {"movement": "signalaus"}, function(data){addInfo(data);});
+        }else{
+            $.post("/action", {"movement": "signalein"}, function(data){addInfo(data);});
+        }
+});
+    
+    
+/*        $('#button-stop').click(function(){
+         $.post("/action", {"movement": "stop"}, responseReceivedZug
+		 );
+});*/
+        $('#aussen').click(function(){
+         $.post("/action", {"movement": "aussen"}, function(data){addInfo(data);}
+		 );
+});
+        $('#innen').click(function(){
+         $.post("/action", {"movement": "innen"}, function(data){addInfo(data);}
 		 );
 });
     
@@ -38,22 +82,8 @@ $(document).ready(function(){
          });
 		 
 		 
-		 /*  WEICHENSTEUERUNG   */
-		 
-		checkStatus_send();
-		
-		$('#button_aussen').click(function()
-			{
-				$.post('/aussen',responseReceived);
-			}
-		);
-		$('#button_innen').click(function()
-			{
-				$.post('/innen',responseReceived);
-			}
-		);
 }); 
-	
+	//click event für momentaufnahme des kamerastreams
 	$('#dLink').click('click', function(){
 		var c = document.createElement('canvas');
         	var img = document.getElementById('stream');
@@ -69,8 +99,7 @@ $(document).ready(function(){
 
 	});
 
-});
-// document ready closing
+}); // document ready closing
 
   /*document.getElementById('save').onclick = function () {
 
@@ -78,20 +107,22 @@ $(document).ready(function(){
         window.open(c.toDataURL('image/png'));
 	window.location.href = img.src.replace('image/png', 'image/octet-stream');
     };*/
-var waitTime;	
+	
+//die waitingtime (zeit zwischen den wechseln der Warteschlange) wird vom server abgefragt
 $.get("/waitingTime", function(wtime){
 		waitTime = parseInt(wtime);
-	
-	
 	}
 );
+
+//jede sekunde wird die verbleibende Zeit geprüft um zu schauen, wie lange es noch dauert, bis der CLient die Kontrolle hat
 setInterval(checkTime, 1000);
 
 function checkTime() {
 	$.get("/timeRemaining", function(timestring){
 		/*console.log("timestring" + timestring);*/
 		$.get("/queuePos", function(posstring){
-			
+			//falls der CLient bereits in der Warteschlange ist, erscheint eine meldung, falls er bereits die Kontrolle besitzt ebenfalls
+            
 			/*console.log("pos " + posstring);*/
 			if(posstring == "not in queue"){
 				/*console.log("Nicht in Warteschleife!");*/
@@ -127,57 +158,32 @@ function download() {
 function addError(errorText){
     $('.alert').hide();
     $('p.error-text').html(errorText);
-    $('.alert-danger').fadeIn();
+    $('.alert-info').fadeIn();
 }
-function addSucces(errorText){
+
+//über ein popup können infos und fehler eingeblendet werden
+function addInfo(errorText){
     $('.alert').hide();
     $('p.error-text').html(errorText);
-    $('.alert-success').fadeIn();
+    $('.alert-info').fadeIn();
 }
 
 
-/*  WEICHENSTEUERUNG LADINA   */
+/*  WEICHENSTEUERUNG   */
 
 // AJAX-function-calls for the buttons 
 
-
-		
-
-
-function responseReceived(data, status)
-		{
-			if("success" == status)		//Check the server-connection
-			{
-				switch (data)
-				{
-					case "0":
-					{
-						alert("Weiche innen.");	//Return the status in a alert-message
-						break;
-					}
-					case "1":
-					{
-						alert("Weiche aussen.");		//Return the status in a alert-message
-						break;
-					}
-					default:
-					{
-						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
-					}
-				}
-			}
-			else
-			{
-				alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
-			}
-		}
+setInterval(checkStatus_send, 1000);
 		
 function checkStatus_send()
 {
-	$.post('/getState',checkStatus);
+    //console.log(signalState);
+	$.post('/getStateZug', checkStatusZug);
+    $.post('/getStateSignal', checkStatusSignal);
+    $.post('/getStateWeiche', checkStatusWeiche);
 }
 	
-function checkStatus(data, status)
+function checkStatusZug(data, status)
 {
 	if("success" == status)
 	{
@@ -185,25 +191,93 @@ function checkStatus(data, status)
 				{
 					case "0":
 					{
-						document.getElementById('bild').setAttribute('src', "imgages/BahnanlageInnen.svg"); 
+                        zugState = 0;
+                         console.log('Zug Status 0');
+						$('#button-start-stop').css("background-color", "#ed1410");	
 						break;
 					}
 					case "1":
 					{
-						document.getElementById("bild").setAttribute("src", "imgages/BahnanlageAussen.svg");	
+                        zugState = 1;
+                        console.log('Zug Status 1');
+						$('#button-start-stop').css("background-color", "#56f442");	
 						break;
 					}
 					default:
 					{
-						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+						console.log("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
 					}
 				}
 	}
 	else
 	{
-		alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+		console.log("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
 	}
-	setTimeout(checkStatus_send, 1000);	
+	
+}
+function checkStatusWeiche(data, status){
+
+    
+	if("success" == status)
+	{
+		switch (data)	//Check the received data
+				{
+					case "0":
+					{
+						document.getElementById('bild').setAttribute('src', "images/BahnanlageInnen.svg"); 
+						break;
+					}
+					case "1":
+					{
+						document.getElementById('bild').setAttribute("src", "images/BahnanlageAussen.svg");	
+						break;
+					}
+					default:
+					{
+						console.log(data);
+                        console.log(status);//Error-message when the server sends false data.
+					}
+				}
+	}
+	else
+	{
+		console.log("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+	}
+	//setTimeout(checkStatus_send, 1000);	
+}
+function checkStatusSignal(data, status)
+{
+	if("success" == status)
+	{
+		switch (data)	//Check the received data
+				{
+					case "0":
+					{
+                        signalState = 0;
+                        console.log('Signal Status 0');
+                        $('#button-signalanaus').css("background-color", "#56f442");
+						//document.getElementById('bild').setAttribute('src', "imgages/BahnanlageInnen.svg"); 
+						break;
+					}
+					case "1":
+					{
+                        signalState = 1;
+                        console.log('Signal Status 1');
+                        $('#button-signalanaus').css("background-color", "#ed1410");
+						//document.getElementById('bild').setAttribute("src", "imgages/BahnanlageAussen.svg");	
+						break;
+					}
+					default:
+					{
+						console.log("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+					}
+				}
+	}
+	else
+	{
+		console.log("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+	}
+	//setTimeout(checkStatus_send, 1000);	
 }
 /*
 function aussen() {
@@ -222,53 +296,89 @@ function aussen() {
 /*   ZUGSTEUERUNG     */
 
 // AJAX-function-calls for the buttons 
-		$(document).ready(function()
-			{
-				$('#button-start').click(function()
-					{
-						$.post('/start',responseReceived);
-						$('#lok_onoff').attr('src','img/dampflok_on.svg');
-					}
-				);
-				$('#button-stop').click(function()
-					{
-						$.post('/stop',responseReceived);
-						$('#lok_onoff').attr('src','img/dampflok_off.svg');
-						//document.getElementById('lok_onoff').setAttribute('src', "img/dampflok_off.svg");
-					}
-				);
-				$('#button-getState').click(function()
-					{
-						$.post('/getState',responseReceived);
-					}
-				);
-			}
-		);
+
 		// AJAX Callback-functions 
-		function responseReceived(data, status)
+function responseReceivedZug(data, status)
+{
+    if("success" == status)		//Check the server-connection
+    {
+        switch (data)	//Check the received data
+        {
+            case "0":
+            {
+                $('#button-start-stop').css("background-color", "#ed1410");	
+                console.log("Zug steht.");		//Return the status in a alert-message
+               
+                break;
+            }
+            case "1":
+            {
+                console.log("Zug faehrt.");		//Return the status in a alert-message	
+                $('#button-start-stop').css("background-color", "#56f442");	
+                break;
+            }
+            default:
+            {
+                console.log("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+            }
+        }
+    }
+    else
+    {
+        console.log("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+    }
+}
+function responseReceivedWeiche(data, status)
 		{
 			if("success" == status)		//Check the server-connection
 			{
-				switch (data)	//Check the received data
+				switch (data)
 				{
 					case "0":
 					{
-						alert("Zug steht.");		//Return the status in a alert-message
+						console.log("Weiche innen.");	//Return the status in a alert-message
 						break;
 					}
 					case "1":
 					{
-						alert("Zug faehrt.");		//Return the status in a alert-message	
+						console.log("Weiche aussen.");		//Return the status in a alert-message
 						break;
 					}
 					default:
 					{
-						alert("Die Daten sind korrupt!!!");	//Error-message when the server sends false data.
+						console.log(data);	//Error-message when the server sends false data.
 					}
 				}
 			}
 			else
 			{
-				alert("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+				console.log("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
+			}
+		}
+function responseReceivedWeiche(data, status)
+		{
+			if("success" == status)		//Check the server-connection
+			{
+				switch (data)
+				{
+					case "0":
+					{
+						console.log("Weiche innen.");	//Return the status in a alert-message
+						break;
+					}
+					case "1":
+					{
+						console.log("Weiche aussen.");		//Return the status in a alert-message
+						break;
+					}
+					default:
+					{
+						console.log(data);	//Error-message when the server sends false data.
+					}
+				}
+			}
+			else
+			{
+				console.log("Kommunikation zum Server scheisse!!!");	//Error-message when the server-connection failed.
 			}
 		}
