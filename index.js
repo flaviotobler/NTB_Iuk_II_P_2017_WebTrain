@@ -132,8 +132,7 @@ app.get('/test', function (req, res) {
     getPosition(function(result){
         res.send(result);
         
-    });
-    
+    });  
   
 });
 
@@ -169,7 +168,7 @@ function camAction(param){
 function getPosition(callback){
     var actPos = {};
     //asynchroner request, deshalb kann pos nicht ala rückgabewert übergeben werden!, deshalb mit callback function realisiert
-    request("http://root:IUK123@192.168.0.90/axis-cgi/com/ptz.cgi?query=position", function (error, response, body) {
+    request(""+baseUrl+"/axis-cgi/com/ptz.cgi?query=position", function (error, response, body) {
     console.log('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
     if(response.statusCode == 200){   
@@ -187,7 +186,6 @@ function getPosition(callback){
         };
         console.log(actPos);
         callback(actPos);
-        
         
     }
         
@@ -291,23 +289,61 @@ app.get('/waitingTime', function(req, res){
     res.send(PW.WAITINGTIME.toString());
 });
 
+
+
+app.post('/getStateWeiche', function(req, res){
+        request.post({url:'http://10.0.0.101:3000/getState'}, function(error, httpResponse, body) {
+        //console.log(body);
+        //console.log(body.body);
+        res.send(200, body);
+    });
+});
+
+app.post('/getStateZug', function(req, res){
+        request.post({url:'http://10.0.0.102:3000/getState'}, function(error, httpResponse, body) {
+        res.send(200, body);
+    });
+});
+app.post('/getStateSignal', function(req, res){
+    //console.log("getstate");
+        request.post({url:'http://10.0.0.100:9000/getState'}, function(error, httpResponse, body) {
+            //console.log(body);
+        res.send(200, body);
+    });
+});
+
+
 //gewünschte Aktion des CLients. Es wird überprüft ob der CLient auch Berechtigt ist, die Aktion auszüführen
 app.post('/action', upload.array(), function(req, res){
     if(req.session.id==director){
         console.log(req.body.movement);
         switch(req.body.movement){
-                //für actions auf diesem server
-                case 'up', 'down', 'left', 'right', 'pos1', 'pos2': 
-                    doAction(req.body.movement);
-                    res.send("erfolgreich");
-                break;
-                //für actions auf den anderen Raspis
-                case 'start', 'stop', 'aussen', 'innen':
-                    doAction(req.body.movement, function(httpRes){
-                        res.send(httpRes);
-                    })
-                break;
-            }
+            //für actions auf diesem server
+            case 'up':
+            case 'down':
+            case 'left':
+            case 'right':
+            case 'pos1':
+            case 'pos2': 
+            case 'zoom+':
+            case 'zoom-':
+                doAction(req.body.movement, function(data){
+                    res.send(data);  
+                });
+
+            break;
+            //für actions auf den anderen Raspis
+            case 'start':
+            case 'stop':
+            case 'aussen':
+            case 'innen':
+            case 'signalein':
+            case 'signalaus':
+                doAction(req.body.movement, function(status, body){
+                    res.send(status, body);
+                })
+            break;
+        }
         
 
         
@@ -317,70 +353,109 @@ app.post('/action', upload.array(), function(req, res){
     }
     
 });
-
 //falls die prüfung ob der CLient berechtig ist besteht, wird die Funktion aufgerufen, 
 //mittels mitgegbenen POST Parametern, wird die gewünschte Aktion ausgeführt
 function doAction(movement, callback){
     switch(movement){
         //zug start stop, weichensteuerung etc requests werden an einen anderen Raspi weitergeleitet. über callback funktionen, kan die rsponse wieder an den client geschickt werden
         case "start":
-                request.post({url:'http://10.0.0.101:3000/start'}, function(err, httpResponse, body) {
+                request.post({url:'http://10.0.0.102:3000/start'}, function(err, httpResponse, body) {
                     if (err) {
                     console.log('operation failed:', err);
                     }
-                    callback(httpResponse);
+                    /*console.log("http response:");
+                    console.log(httpResponse);
+                    console.log("http body:");
+                    console.log(body);*/
+                    callback(200, body);
                 });
             break;
         case "stop":
-                request.post({url:'http://10.0.0.101:3000/stop'}, function(err, httpResponse, body) {
+                request.post({url:'http://10.0.0.102:3000/stop'}, function(err, httpResponse, body) {
+                    
                     if (err) {
                     console.log('operation failed:', err);
                     }
-                    callback(httpResponse);
+                    callback(200, body);
                 });
             break;
         case "aussen":
-                request.post({url:'http://10.0.0.102:3000/aussen'}, function(err, httpResponse, body) {
+            console.log("vor post");
+                request.post({url:'http://10.0.0.101:3000/aussen'}, function(err, httpResponse, body) {
+                    console.log('aussen sent');
                     if (err) {
                     console.log('operation failed:', err);
                     }
-                    callback(httpResponse);
+                    callback(200, body);
                 });
             break;
         case "innen":
-                request.post({url:'http://10.0.0.102:3000/innen'}, function(err, httpResponse, body) {
+            console.log("vor post");
+                request.post({url:'http://10.0.0.101:3000/innen'}, function(err, httpResponse, body) {
+                    console.log('innen sent');
                     if (err) {
                     console.log('operation failed:', err);
                     }
-                    callback(httpResponse);
+                    callback(200, body);
+                });
+            break;
+        case "signalaus":
+                request.post({url:'http://10.0.0.100:9000/frei'}, function(err, httpResponse, body) {
+                    if (err) {
+                    console.log('operation failed:', err);
+                    }
+                    callback(200, body);
+                });
+            break;
+        case "signalein":
+                request.post({url:'http://10.0.0.100:9000/sperrung'}, function(err, httpResponse, body) {
+                    if (err) {
+                    console.log('operation failed:', err);
+                    }
+                    callback(200, body);
                 });
             break;
         case "up":
             camAction("move=up");
-            
+            callback("erfolgreich");
         break;
         
         case "down":
             camAction("move=down");
-
+            callback("erfolgreich");
         break;
             
         case "left":
             camAction("move=left");
+            callback("erfolgreich");
 
         break;
             
         case "right":
             camAction("move=right");
+            callback("erfolgreich");
 
         break;
         case "zoom+":
-            camAction("zoom="+(zoom+1)+"");
-            zoom++;
+            if(zoom>=7500){
+                zoom = 7500;
+                camAction("zoom="+(zoom)+"");
+            }else{
+                zoom = zoom + 500;
+                camAction("zoom="+(zoom)+""); 
+            }
+            callback("erfolgreich");
         break;
         case "zoom-":
-            camAction("zoom="+(zoom-1)+"");
-            zoom--;
+            if(zoom<500){
+                zoom = 1;
+                camAction("zoom="+(zoom)+"");
+            }else{
+                zoom = zoom - 500;
+                camAction("zoom="+(zoom)+""); 
+            }
+            
+            callback("erfolgreich");
         break;
         case "pos1":
             //mit pan= kann eine absolute pan (x) Position angegeben werden
@@ -388,6 +463,7 @@ function doAction(movement, callback){
             //mit tilt= kann eine absolute tilt (y) Position angegeben werden
             camAction("tilt="+PW.POS1.y);
             //code für focus zoom etc.
+            callback("erfolgreich");
 
         break;
         case "pos2":
@@ -396,6 +472,7 @@ function doAction(movement, callback){
             //mit tilt= kann eine absolute tilt (y) Position angegeben werden
             camAction("tilt="+PW.POS2.y);
             //code für focus zoom etc.
+            callback("erfolgreich");
 
         break;
               
